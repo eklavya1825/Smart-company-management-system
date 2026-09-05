@@ -1,0 +1,12 @@
+{
+  "name": "scms",
+  "version": "1.0.0",
+  "description": "Smart Company Management System - a full-stack company management portal",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "seed": "npm run seed --prefix server"
+  }
+}
