@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import api from "../services/api";
+import React, { createContext, useState, useContext, useEffect } from "react";
+//  Import your custom API instance instead of standard axios
+import api from "../services/api"; 
 
 const AuthContext = createContext(null);
 
@@ -8,20 +9,30 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check if user session exists on app load
     const storedUser = localStorage.getItem("scms_user");
-    const token = localStorage.getItem("scms_token");
-    if (storedUser && token) {
+    const storedToken = localStorage.getItem("scms_token");
+    if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
   }, []);
 
+  // Updated login function routing requests cleanly to Render
   const login = async (email, password) => {
-    const { data } = await api.post("/auth/login", { email, password });
-    localStorage.setItem("scms_token", data.token);
-    localStorage.setItem("scms_user", JSON.stringify(data.user));
-    setUser(data.user);
-    return data.user;
+    try {
+      // Changed from axios.post('http://localhost...') to api.post
+      const response = await api.post("/api/auth/login", { email, password });
+      
+      if (response.data.token) {
+        localStorage.setItem("scms_token", response.data.token);
+        localStorage.setItem("scms_user", JSON.stringify(response.data.user));
+        setUser(response.data.user);
+        return response.data;
+      }
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = () => {
@@ -32,7 +43,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
