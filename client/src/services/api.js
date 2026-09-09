@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../services/api";
 
 // Automatically uses your Render URL on Vercel, and falls back to localhost during local development
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
