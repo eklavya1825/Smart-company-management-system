@@ -1,14 +1,14 @@
-import api from "../services/api";
+import axios from "axios";
 
-// Automatically uses your Render URL on Vercel, and falls back to localhost during local development
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Automatically uses your Render/Railway URL in production (via VITE_API_URL),
+// and falls back to the local dev proxy ("/api") during local development.
+const baseURL = import.meta.env.VITE_API_URL || "/api";
 
 const api = axios.create({
-  baseURL: API_BASE_URL, 
-  withCredentials: true, // Crucial for handling cookies/sessions across domains safely
+  baseURL,
 });
 
-// Attach the JWT token (if present) to every outgoing request heading to Render
+// Attach the JWT token (if present) to every outgoing request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("scms_token");
   if (token) {
